@@ -1,9 +1,9 @@
 from fastapi import HTTPException
-from core.database import users_collection
+from .jobseeker_database import jobseekers_collection
 from core.utils import hash_password
 
 def job_seeker_register(email: str, password: str, name: str):
-    if users_collection.find_one({"email": email}):
+    if jobseekers_collection.find_one({"email": email}):
         raise HTTPException(status_code=400, detail="Email already registered")
     
     user_data = {
@@ -12,5 +12,5 @@ def job_seeker_register(email: str, password: str, name: str):
         "name": name,
         "user_type": "job_seeker"
     }
-    result = users_collection.insert_one(user_data)
+    result = jobseekers_collection.insert_one(user_data)
     return {"user_id": str(result.inserted_id), "email": email, "message": "Registration successful"}
